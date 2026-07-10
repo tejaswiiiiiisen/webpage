@@ -8,12 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
 min-height:100vh;
@@ -23,15 +18,34 @@ align-items:center;
 padding:40px;
 font-family:'Cormorant Garamond',serif;
 background:
-linear-gradient(rgba(20,16,12,.65),rgba(20,16,12,.65)),
+linear-gradient(rgba(15,12,9,.72),rgba(15,12,9,.72)),
 url("https://images.unsplash.com/photo-1510936111840-65e151ad71bb?auto=format&fit=crop&w=1400&q=80");
 background-size:cover;
 background-position:center;
-overflow:auto;
+background-attachment:fixed;
+overflow-x:hidden;
+position:relative;
+}
+
+#sparkleCanvas{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:1;
+}
+
+#fireflyCanvas{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:3;
 }
 
 .paper{
-
 width:850px;
 max-width:95%;
 background:#f7edd8;
@@ -40,32 +54,15 @@ border-radius:8px;
 box-shadow:
 0 0 60px rgba(0,0,0,.5),
 inset 0 0 40px rgba(135,94,32,.15);
-
-background-image:
-repeating-linear-gradient(
-transparent,
-transparent 33px,
-rgba(0,0,0,.05) 34px
-);
-
+background-image:repeating-linear-gradient(transparent,transparent 33px,rgba(0,0,0,.05) 34px);
 position:relative;
-
+z-index:2;
 animation:fade 1.3s ease;
 }
 
-@keyframes fade{
-from{
-opacity:0;
-transform:translateY(40px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
+@keyframes fade{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
 
 .paper::before{
-
 content:"";
 position:absolute;
 inset:10px;
@@ -74,310 +71,404 @@ pointer-events:none;
 }
 
 h1{
-
 text-align:center;
 font-family:'Dancing Script',cursive;
 font-size:58px;
 color:#4d3114;
 margin-bottom:5px;
+text-shadow:0 0 18px rgba(255,210,140,.35);
 }
 
-.subtitle{
+.subtitle{text-align:center;font-size:20px;color:#6e5233;margin-bottom:40px;font-style:italic;}
 
-text-align:center;
-font-size:20px;
-color:#6e5233;
-margin-bottom:40px;
-font-style:italic;
-}
-
-label{
-
-display:block;
-margin-top:20px;
-font-size:23px;
-color:#55361d;
-font-weight:bold;
-}
+label{display:block;margin-top:20px;font-size:23px;color:#55361d;font-weight:bold;}
 
 input,textarea{
-
-width:100%;
-margin-top:10px;
-padding:16px;
-font-size:20px;
-border:none;
-outline:none;
-background:transparent;
-border-bottom:2px solid rgba(90,60,25,.25);
-font-family:'Cormorant Garamond',serif;
-color:#3e2b1b;
-resize:none;
+width:100%;margin-top:10px;padding:16px;font-size:20px;border:none;outline:none;
+background:transparent;border-bottom:2px solid rgba(90,60,25,.25);
+font-family:'Cormorant Garamond',serif;color:#3e2b1b;resize:none;
+transition:border-color .25s ease,box-shadow .25s ease;
 }
 
-textarea{
-height:170px;
-}
+input:focus,textarea:focus{border-bottom-color:#5b3a1d;box-shadow:0 6px 12px -8px rgba(91,58,29,.5);}
+
+textarea{height:170px;}
+
+#letterBox{height:380px;}
 
 button{
-
-margin-top:35px;
-padding:15px 45px;
-font-size:20px;
-background:#5b3a1d;
-color:white;
-border:none;
-border-radius:40px;
-cursor:pointer;
-transition:.3s;
-font-family:'Cormorant Garamond',serif;
+margin-top:35px;padding:15px 45px;font-size:20px;background:#5b3a1d;color:#fff;
+border:none;border-radius:40px;cursor:pointer;transition:.3s;
+font-family:'Cormorant Garamond',serif;display:block;margin-left:auto;margin-right:auto;
+box-shadow:0 8px 20px -8px rgba(91,58,29,.6);
 }
 
-button:hover{
+button:hover{background:#7b5028;transform:translateY(-3px);box-shadow:0 12px 26px -8px rgba(91,58,29,.7);}
+button:disabled{opacity:.55;cursor:not-allowed;transform:none;}
 
-background:#7b5028;
-transform:translateY(-3px);
-}
+.footer{margin-top:45px;text-align:center;font-size:20px;color:#6e5233;font-style:italic;}
 
-.footer{
+.error{color:#a02f2f;font-size:15px;margin-top:6px;display:none;}
 
-margin-top:45px;
-text-align:center;
-font-size:20px;
-color:#6e5233;
-font-style:italic;
-}
+@media(max-width:700px){.paper{padding:30px;}h1{font-size:42px;}}
 
-@media(max-width:700px){
-
-.paper{
-padding:30px;
-}
-
-h1{
-font-size:42px;
-}
-
-}
-
-.popup{
+/* ---------- Music toggle ---------- */
+#musicBtn{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.75);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:9999;
-backdrop-filter:blur(5px);
+bottom:22px;
+right:22px;
+width:52px;height:52px;
+border-radius:50%;
+background:rgba(91,58,29,.85);
+color:#f7edd8;
+border:1px solid rgba(255,255,255,.25);
+font-size:22px;
+display:flex;align-items:center;justify-content:center;
+cursor:pointer;
+z-index:50;
+box-shadow:0 6px 20px rgba(0,0,0,.4);
+transition:transform .25s ease,background .25s ease;
 }
+#musicBtn:hover{transform:scale(1.08);background:#7b5028;}
+#musicBtn.playing{animation:pulseGlow 2.2s ease-in-out infinite;}
+@keyframes pulseGlow{
+0%,100%{box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 0 rgba(255,210,140,0);}
+50%{box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px rgba(255,210,140,.55);}
+}
+
+/* ---------- Popup ---------- */
+.popup{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,.75);
+display:none;justify-content:center;align-items:center;
+z-index:9999;backdrop-filter:blur(6px);
+}
+.popup.active{display:flex;}
 
 .popup-content{
-
-width:420px;
-max-width:90%;
-background:#f7edd8;
-padding:35px;
-border-radius:15px;
-text-align:center;
-box-shadow:0 20px 50px rgba(0,0,0,.45);
-animation:pop .4s ease;
+width:420px;max-width:90%;background:#f7edd8;padding:35px;border-radius:15px;
+text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 40px rgba(255,200,120,.15);
+animation:pop .4s ease;position:relative;overflow:hidden;
 }
 
-@keyframes pop{
+@keyframes pop{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
 
-from{
-transform:scale(.8);
-opacity:0;
-}
-
-to{
-transform:scale(1);
-opacity:1;
-}
-
-}
-
-.popup-content h2{
-
-color:#5b3a1d;
-margin-bottom:15px;
-font-size:34px;
-font-family:'Dancing Script',cursive;
-
-}
-
-.popup-content p{
-
-font-size:22px;
-line-height:1.7;
-color:#5a4127;
-
-}
+.popup-content h2{color:#5b3a1d;margin-bottom:15px;font-size:34px;font-family:'Dancing Script',cursive;}
+.popup-content p{font-size:22px;line-height:1.7;color:#5a4127;}
 
 .number-box{
-
-margin:25px auto;
-padding:18px;
-font-size:28px;
-font-weight:bold;
-letter-spacing:2px;
-color:#075E54;
-border:2px dashed #075E54;
-border-radius:12px;
-background:#ecfff5;
-
+margin:25px auto;padding:18px;font-size:28px;font-weight:bold;letter-spacing:2px;
+color:#075E54;border:2px dashed #075E54;border-radius:12px;background:#ecfff5;
 }
 
 .whatsapp-btn{
-
-display:inline-block;
-margin-top:10px;
-padding:14px 35px;
-background:#25D366;
-color:white;
-text-decoration:none;
-font-size:20px;
-border-radius:40px;
-transition:.3s;
-
+display:inline-block;margin-top:10px;padding:14px 35px;background:#25D366;color:#fff;
+text-decoration:none;font-size:20px;border-radius:40px;transition:.3s;
+box-shadow:0 8px 20px -8px rgba(37,211,102,.7);
 }
-
-.whatsapp-btn:hover{
-
-background:#1da851;
-transform:translateY(-2px);
-
-}
+.whatsapp-btn:hover{background:#1da851;transform:translateY(-2px);}
 
 .close-btn{
+margin-top:20px;padding:12px 30px;border:none;background:#5b3a1d;color:#fff;
+font-size:18px;border-radius:30px;cursor:pointer;
+}
+.close-btn:hover{background:#7b5028;}
 
-margin-top:20px;
-padding:12px 30px;
-border:none;
-background:#5b3a1d;
-color:white;
-font-size:18px;
-border-radius:30px;
-cursor:pointer;
+.consent-btns{display:flex;gap:15px;justify-content:center;margin-top:20px;flex-wrap:wrap;}
+.yes-btn{
+padding:12px 40px;border:none;background:#25D366;color:#fff;
+font-size:18px;border-radius:30px;cursor:pointer;transition:.3s;
+}
+.yes-btn:hover{background:#1da851;transform:translateY(-2px);}
+.no-btn{
+padding:12px 40px;border:2px solid #5b3a1d;background:transparent;color:#5b3a1d;
+font-size:18px;border-radius:30px;cursor:pointer;transition:.3s;
+}
+.no-btn:hover{background:rgba(91,58,29,.1);}
 
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width:768px){
+body{padding:15px;align-items:flex-start;}
+.paper{width:100%;max-width:100%;padding:22px 18px;border-radius:12px;margin:20px 0;}
+.paper::before{inset:6px;}
+h1{font-size:42px;line-height:1.2;}
+.subtitle{font-size:17px;margin-bottom:25px;line-height:1.6;}
+label{font-size:20px;margin-top:18px;}
+input,textarea{font-size:18px;padding:14px;border-radius:8px;}
+textarea{height:140px;}
+#letterBox{height:300px;}
+button{width:100%;padding:16px;font-size:19px;margin-top:25px;}
+.popup-content{width:95%;padding:25px 18px;}
+.popup-content h2{font-size:30px;}
+.popup-content p{font-size:18px;line-height:1.6;}
+.number-box{font-size:22px;padding:15px;word-break:break-word;}
+.whatsapp-btn,.close-btn{width:100%;font-size:18px;padding:14px;margin-top:15px;}
+.footer{font-size:18px;line-height:1.6;}
+#musicBtn{width:46px;height:46px;font-size:19px;bottom:16px;right:16px;}
 }
 
-.close-btn:hover{
-
-background:#7b5028;
-
+@media (max-width:480px){
+body{padding:10px;}
+.paper{padding:18px 15px;}
+h1{font-size:34px;}
+.subtitle{font-size:15px;}
+label{font-size:18px;}
+input,textarea{font-size:16px;padding:12px;}
+textarea{height:130px;}
+#letterBox{height:260px;}
+button{font-size:17px;padding:14px;}
+.popup-content h2{font-size:26px;}
+.popup-content p{font-size:16px;}
+.number-box{font-size:20px;}
+.footer{font-size:16px;}
 }
-
 </style>
-
 </head>
 <body>
+
+<canvas id="sparkleCanvas"></canvas>
+<canvas id="fireflyCanvas"></canvas>
+
+<button id="musicBtn" title="Play soft music">🎵</button>
+
+<!-- Consent Popup -->
+<div class="popup active" id="consentPopup">
+  <div class="popup-content">
+    <h2>Before You Begin 🌙</h2>
+    <p>This page will play soft music while you write, and the fireflies will keep you company.<br><br>Is that okay with you?</p>
+    <div class="consent-btns">
+      <button class="yes-btn" onclick="giveConsent()">Yes ✨</button>
+    </div>
+  </div>
+</div>
 
 <div class="paper">
 
 <h1>Letters Left Between Time</h1>
+<p class="subtitle">Write freely. Every word here is safe.</p>
 
-<p class="subtitle">
-Some thoughts are too beautiful to stay unspoken.<br>
-Some memories deserve a place where time can never erase them.<br>
-Tonight, this page belongs only to you.
-</p>
 <label>Your Name</label>
 <input type="text" id="name" placeholder="How should this letter remember you?">
 
-<label>What's Living Inside Your Heart?</label>
-<textarea id="heart" placeholder="Write whatever your heart has been carrying..."></textarea>
+<label>Your Letter</label>
+<textarea id="letterBox" placeholder="Share anything, it will stay locked here...
 
-<label>Tell Me About Your Last 365 Days</label>
-<textarea id="year" placeholder="How has life treated you during the past year?"></textarea>
+Happiness, silence, memories, regrets, hope, a hidden pain, a silent wish, a dream waiting to happen, or simply the little things that made this year unforgettable.
 
-<label>If Your Heart Could Speak...</label>
-<textarea id="speak" placeholder="If there is something you've never told anyone..."></textarea>
-
-<label>One Thing You Wish Life Had Given You</label>
-<textarea id="wish" placeholder="If you could ask life for just one thing..."></textarea>
-
-<label>Write a Letter to Your Future Self</label>
-<textarea id="future" placeholder="Imagine reading this one year from today."></textarea>
-
-<label>One Sentence That Should Never Be Forgotten</label>
-<textarea id="sentence" placeholder="Leave one sentence..."></textarea>
+This page won't judge you."></textarea>
 
 <center>
-<button onclick="sendWhatsApp()">Seal This Letter ✉️</button>
+<button id="sealBtn" onclick="showWhatsApp()">Seal This Letter ✉️</button>
+<p class="error" id="errorMsg">Please write at least your name before sealing the letter.</p>
 </center>
 
-
-
-</div>
-
-
-
-<br>
-
-<button class="close-btn" onclick="closePopup()">
-Close
-</button>
+<p class="footer">Once sealed, your letter opens in WhatsApp for you to send.</p>
 
 </div>
 
+<!-- Popup -->
+<div class="popup" id="whatsappCard">
+  <div class="popup-content">
+    <h2>Letter Sealed 💌</h2>
+    <p>Your words have been folded into a message.<br>Tap below to send it on WhatsApp.</p>
+    <div class="number-box">+91 82099 25051</div>
+    <a href="#" id="whatsappLink" class="whatsapp-btn" target="_blank" rel="noopener">Open WhatsApp</a><br>
+    <button class="close-btn" onclick="closePopup()">Close</button>
+  </div>
 </div>
 
-</div>
 <script>
-function sendWhatsApp() {
+/* ---------- WhatsApp letter logic ---------- */
+function buildMessage(){
+  const v = id => document.getElementById(id).value.trim() || "—";
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"});
+  const timeStr = now.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
 
-    let name = document.getElementById("name").value;
-    let heart = document.getElementById("heart").value;
-    let year = document.getElementById("year").value;
-    let speak = document.getElementById("speak").value;
-    let wish = document.getElementById("wish").value;
-    let future = document.getElementById("future").value;
-    let sentence = document.getElementById("sentence").value;
+  return `━━━━━━━━━━━━━━━
+📜 *LETTERS LEFT BETWEEN TIME*
+━━━━━━━━━━━━━━━
 
-    let message =
-`📜 *Letters Left Between Time*
+👤 *Name:* ${v("name")}
+🗓️ *Date:* ${dateStr}, ${timeStr}
 
-👤 *Your Name*
-${name}
+━━━━━━━━━━━━━━━
+💌 *THE LETTER*
+━━━━━━━━━━━━━━━
+${v("letterBox")}
 
-❤️ *What's Living Inside Your Heart?*
-${heart}
-
-📅 *Tell Me About Your Last 365 Days*
-${year}
-
-💭 *If Your Heart Could Speak...*
-${speak}
-
-🌈 *One Thing You Wish Life Had Given You*
-${wish}
-
-✍️ *Write a Letter to Your Future Self*
-${future}
-
-📖 *One Sentence That Should Never Be Forgotten*
-${sentence}
-
+━━━━━━━━━━━━━━━
 ❤️ Thank you for sharing your story.`;
-
-    let url = "https://wa.me/918209925051?text=" + encodeURIComponent(message);
-
-    window.open(url, "_blank");
 }
 
-function showWhatsApp() {
-    document.getElementById("whatsappCard").style.display = "flex";
+function showWhatsApp(){
+  const name = document.getElementById("name").value.trim();
+  const errorMsg = document.getElementById("errorMsg");
+  if(!name){ errorMsg.style.display = "block"; return; }
+  errorMsg.style.display = "none";
 
-    // WhatsApp bhi open hoga
-    sendWhatsApp();
+  const url = "https://wa.me/918209925051?text=" + encodeURIComponent(buildMessage());
+  document.getElementById("whatsappLink").setAttribute("href", url);
+  document.getElementById("whatsappCard").classList.add("active");
 }
 
-function closePopup() {
-    document.getElementById("whatsappCard").style.display = "none";
+function closePopup(){ document.getElementById("whatsappCard").classList.remove("active"); }
+
+document.getElementById("whatsappCard").addEventListener("click", function(e){
+  if(e.target === this) closePopup();
+});
+
+/* ---------- Cinematic sparkle particles ---------- */
+const cvs = document.getElementById("sparkleCanvas");
+const ctx = cvs.getContext("2d");
+let W,H,particles=[];
+
+function resize(){ W=cvs.width=innerWidth; H=cvs.height=innerHeight; }
+resize(); addEventListener("resize", resize);
+
+const N = innerWidth < 600 ? 35 : 70;
+for(let i=0;i<N;i++){
+  particles.push({
+    x:Math.random()*W, y:Math.random()*H,
+    r:Math.random()*1.6+0.4,
+    a:Math.random()*Math.PI*2,
+    speed:Math.random()*0.3+0.05,
+    drift:Math.random()*0.4-0.2
+  });
+}
+
+function tick(){
+  ctx.clearRect(0,0,W,H);
+  for(const p of particles){
+    p.a += 0.02;
+    p.y -= p.speed;
+    p.x += p.drift;
+    if(p.y < -10){ p.y = H+10; p.x = Math.random()*W; }
+    if(p.x < -10) p.x = W+10;
+    if(p.x > W+10) p.x = -10;
+    const twinkle = (Math.sin(p.a)+1)/2;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r+twinkle*1.2,0,Math.PI*2);
+    ctx.fillStyle = `rgba(255,214,150,${0.15+twinkle*0.5})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(tick);
+}
+tick();
+
+/* ---------- Blue glittery fireflies (jugnu) ---------- */
+const fcvs = document.getElementById("fireflyCanvas");
+const fctx = fcvs.getContext("2d");
+let FW,FH,fireflies=[];
+
+function fresize(){ FW=fcvs.width=innerWidth; FH=fcvs.height=innerHeight; }
+fresize(); addEventListener("resize", fresize);
+
+const FN = innerWidth < 600 ? 20 : 38;
+for(let i=0;i<FN;i++){
+  fireflies.push({
+    x:Math.random()*FW, y:Math.random()*FH,
+    baseX:Math.random()*FW, baseY:Math.random()*FH,
+    r:Math.random()*2.5+2,
+    angle:Math.random()*Math.PI*2,
+    wobbleSpeed:Math.random()*0.015+0.005,
+    radiusX:Math.random()*70+25,
+    radiusY:Math.random()*70+25,
+    drift:Math.random()*0.18-0.09,
+    glow:Math.random()*Math.PI*2,
+    glowSpeed:Math.random()*0.04+0.02
+  });
+}
+
+function ftick(){
+  fctx.clearRect(0,0,FW,FH);
+  for(const f of fireflies){
+    f.angle += f.wobbleSpeed;
+    f.baseY -= f.drift;
+    if(f.baseY < -50) f.baseY = FH+50;
+    if(f.baseY > FH+50) f.baseY = -50;
+    f.x = f.baseX + Math.cos(f.angle)*f.radiusX;
+    f.y = f.baseY + Math.sin(f.angle*1.3)*f.radiusY;
+    f.glow += f.glowSpeed;
+    const flicker = (Math.sin(f.glow)+1)/2;
+    const alpha = 0.45 + flicker*0.55;
+    const glowR = f.r*7 + flicker*6;
+
+    const grad = fctx.createRadialGradient(f.x,f.y,0,f.x,f.y,glowR);
+    grad.addColorStop(0, `rgba(90,180,255,${alpha})`);
+    grad.addColorStop(0.35, `rgba(40,130,255,${alpha*0.7})`);
+    grad.addColorStop(0.7, `rgba(20,90,255,${alpha*0.25})`);
+    grad.addColorStop(1, `rgba(20,90,255,0)`);
+    fctx.beginPath();
+    fctx.arc(f.x,f.y,glowR,0,Math.PI*2);
+    fctx.fillStyle = grad;
+    fctx.fill();
+
+    fctx.beginPath();
+    fctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    fctx.fillStyle = `rgba(230,245,255,${Math.min(alpha+0.3,1)})`;
+    fctx.shadowColor = "rgba(80,170,255,0.9)";
+    fctx.shadowBlur = 12;
+    fctx.fill();
+    fctx.shadowBlur = 0;
+  }
+  requestAnimationFrame(ftick);
+}
+ftick();
+
+/* ---------- Ambient music (tiny synth pad, no external file) ---------- */
+let audioCtx, master, playing=false;
+
+function startMusic(){
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  master = audioCtx.createGain();
+  master.gain.value = 0.0;
+  master.connect(audioCtx.destination);
+  master.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime+2);
+
+  const notes = [130.81,164.81,196.00,261.63]; // soft C-major pad
+  notes.forEach((f,i)=>{
+    const osc = audioCtx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = f;
+    const g = audioCtx.createGain();
+    g.gain.value = 0.5/(i+1);
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 0.05+i*0.02;
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 0.15;
+    lfo.connect(lfoGain);
+    lfoGain.connect(g.gain);
+    osc.connect(g);
+    g.connect(master);
+    osc.start(); lfo.start();
+  });
+}
+
+document.getElementById("musicBtn").addEventListener("click", function(){
+  if(!playing){
+    if(!audioCtx) startMusic();
+    else audioCtx.resume();
+    this.textContent = "🔊";
+    this.classList.add("playing");
+    playing = true;
+  } else {
+    audioCtx.suspend();
+    this.textContent = "🎵";
+    this.classList.remove("playing");
+    playing = false;
+  }
+});
+
+/* ---------- Consent popup on page load ---------- */
+function giveConsent(){
+  document.getElementById("consentPopup").classList.remove("active");
+  if(!audioCtx) startMusic();
+  else audioCtx.resume();
+  const musicBtn = document.getElementById("musicBtn");
+  musicBtn.textContent = "🔊";
+  musicBtn.classList.add("playing");
+  playing = true;
 }
 </script>
 </body>
